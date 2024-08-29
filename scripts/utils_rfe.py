@@ -81,7 +81,7 @@ def prepare_data(csv_file, audio_source, classify, algorithm=None, feature_selec
             raise ValueError("Inputted feature selection option not supported")
         print("Selected features: ", selected_features)
 
-    return x, y
+    return x, y, selected_features
 
 
 def handle_missing_data(x):

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.feature_selection import RFECV
+from sklearn.feature_selection import RFE, RFECV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
@@ -35,7 +35,7 @@ def select_k_best_feature_selection_v1(num_features, x, y):
 
     return x_new, selected_features
 
-
+# Second implementation of k select best outputtted same result as the first when set to 5 features
 def select_k_best_feature_selection_v2(max_features, x, y, algorithm, hidden_layers=(12,), random_state=42):
     """
     Select the best performing feature combination up to max_features using SelectKBest and cross-validation.
@@ -194,6 +194,36 @@ def calculate_cfs(x_subset, y):
     cfs_value = (np.mean(f_class) / ((1 / num_features) * np.sum(np.sum(correlations)))) * num_features
 
     return cfs_value
+
+
+def rfe_feature_selector(x, y, num_features, algorithm):
+    """
+    Perform feature selection using RFE.
+
+    Parameters:
+        x (DataFrame): The input samples.
+        y (Series): The target values.
+        num_features (int): The number of top features to select.
+        algorithm (str): The algorithm to use ('rf' for RandomForest, 'knn' for KNeighbors, 'mlp' for MLPClassifier).
+
+    Returns:
+        x_transformed (DataFrame): The input samples with selected features.
+        selected_features (list): List of selected feature names.
+    """
+    
+    model = get_model_from_string(algorithm)
+
+    # Perform RFE
+    rfe = RFE(estimator=model, n_features_to_select=num_features)
+    rfe.fit(x, y)
+    
+    # Get selected features
+    selected_features = x.columns[rfe.support_]
+    
+    # Transform the dataset
+    x_transformed = rfe.transform(x)
+    
+    return x_transformed, selected_features
 
 
 def rfecv_feature_selector(x, y, min_features_to_select, algorithm):

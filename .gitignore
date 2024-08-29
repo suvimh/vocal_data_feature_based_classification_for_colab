@@ -1,7 +1,10 @@
 # Ignore log files
 *.log
 
-# Ignore csv data file 
+# ignore json files for feature extraction algorithm analysis
+data/*.json
+
+#ignore CSV data files to allow github upload
 *.csv
 
 # Ignore OS-specific files
